@@ -1,0 +1,33 @@
+{
+  "name": "poc-4-claudia",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:express": "node express-server/server.js",
+    "start:fastify": "node fastify-server/server.js",
+    "dev:express": "nodemon express-server/server.js",
+    "dev:fastify": "nodemon fastify-server/server.js",
+    "dev:both": "concurrently \"npm run dev:express\" \"npm run dev:fastify\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/swagger": "^9.5.1",
+    "@fastify/swagger-ui": "^5.2.3",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "curl": "^0.1.4",
+    "express": "^5.1.0",
+    "fastify": "^5.5.0",
+    "joi": "^18.0.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.10"
+  }
+}
