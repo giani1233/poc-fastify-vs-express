@@ -1,53 +1,46 @@
-const fp = require('fastify-plugin');
+const Joi = require('joi');
 
-async function validationPlugin(fastify, options) {
-  // Plugin personalizado para validaciones adicionales
-  
-  fastify.addHook('preValidation', async (request, reply) => {
-    if (request.method === 'POST' && request.url.includes('/eventos')) {
-      // Validaciones adicionales para creación de eventos
-      if (request.body) {
-        const { fecha, horaInicio, horaFin } = request.body;
-        
-        // Validar que la fecha no sea en el pasado
-        if (fecha && new Date(fecha) <= new Date()) {
-          return reply.status(400).send({
-            success: false,
-            error: 'La fecha del evento debe ser futura',
-            server: 'Fastify'
-          });
-        }
-        
-        // Validar que horaFin sea posterior a horaInicio
-        if (horaInicio && horaFin && horaInicio >= horaFin) {
-          return reply.status(400).send({
-            success: false,
-            error: 'La hora de fin debe ser posterior a la hora de inicio',
-            server: 'Fastify'
-          });
-        }
-      }
-    }
-  });
-  
-  // Función helper para validaciones personalizadas
-  fastify.decorate('validateBusinessRules', function(eventoData) {
-    const errors = [];
-    
-    if (eventoData.precioEntrada < 0) {
-      errors.push('El precio de entrada no puede ser negativo');
-    }
-    
-    if (eventoData.cantCupos <= 0) {
-      errors.push('La cantidad de cupos debe ser mayor a cero');
-    }
-    
-    if (eventoData.edadMinima && (eventoData.edadMinima < 0 || eventoData.edadMinima > 99)) {
-      errors.push('La edad mínima debe estar entre 0 y 99 años');
-    }
-    
-    return errors;
-  });
-}
+// (reusamos tus schemas exactamente igual que en Express)
+const eventoSchema = Joi.object({
+  nombre: Joi.string().min(3).max(100).required(),
+  descripcion: Joi.string().min(10).max(500).required(),
+  precioEntrada: Joi.number().positive().required(),
+  cantCupos: Joi.number().integer().positive().required(),
+  fecha: Joi.date().iso().greater('now').required(),
+  horaInicio: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).required(),
+  horaFin: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).required(),
+  edadMinima: Joi.number().integer().min(0).max(99).optional().default(0),
+  categoria: Joi.number().integer().positive().required(),
+  direccion: Joi.object({
+    calle: Joi.string().required(),
+    altura: Joi.number().integer().positive().required(),
+    detalles: Joi.string().optional()
+  }).required(),
+  localidad: Joi.object({
+    nombre: Joi.string().required(),
+    codigoPostal: Joi.string().required()
+  }).required()
+});
 
-module.exports = fp(validationPlugin);
+const eventoUpdateSchema = eventoSchema.fork(
+  ['nombre', 'descripcion', 'precioEntrada', 'cantCupos', 'fecha', 'horaInicio', 'horaFin', 'categoria', 'direccion', 'localidad'],
+  schema => schema.optional()
+);
+
+const validateEvento = async (req, reply, done) => {
+  const { error } = eventoSchema.validate(req.body);
+  if (error) {
+    return reply.status(400).send({ success: false, error: error.details[0].message, server: 'Fastify' });
+  }
+  done();
+};
+
+const validateEventoUpdate = async (req, reply, done) => {
+  const { error } = eventoUpdateSchema.validate(req.body);
+  if (error) {
+    return reply.status(400).send({ success: false, error: error.details[0].message, server: 'Fastify' });
+  }
+  done();
+};
+
+module.exports = { validateEvento, validateEventoUpdate };

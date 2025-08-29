@@ -38,9 +38,11 @@ app.get('/health', (req, res) => {
   });
 });
 
+console.time('server-start')
 app.listen(PORT, () => {
   console.log(`🚀 Servidor Express corriendo en puerto ${PORT}`);
   console.log(`📖 Documentación: http://localhost:${PORT}/health`);
+  console.timeEnd('server-start')
 });
 
 module.exports = app;
