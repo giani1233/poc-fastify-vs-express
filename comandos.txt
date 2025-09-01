@@ -1,0 +1,9 @@
+AUTOCANNON PARA EXPRESS:
+
+npx autocannon -c 200 -d 30 -p 10 http://localhost:3001/api/eventos
+
+
+
+AUTOCANNON PARA FASTIFY:
+
+npx autocannon -c 200 -d 30 -p 10 http://[::1]:3002/api/eventos

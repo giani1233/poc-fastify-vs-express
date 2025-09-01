@@ -1,6 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
-
-// Simulación de base de datos en memoria
 class Database {
   constructor() {
     this.eventos = [];
@@ -10,7 +7,6 @@ class Database {
   }
 
   initData() {
-    // Datos iniciales para testing
     this.categorias = [
       { idCategoria: 1, nombre: 'Conciertos' },
       { idCategoria: 2, nombre: 'Deportes' },
@@ -29,7 +25,7 @@ class Database {
 
     this.eventos = [
       {
-        idEvento: uuidv4(),
+        idEvento: 1,
         nombre: 'Concierto Rock Nacional',
         descripcion: 'Gran concierto de rock con bandas locales',
         precioEntrada: 2500,
@@ -53,7 +49,6 @@ class Database {
     ];
   }
 
-  // Métodos para eventos
   getAllEventos() {
     return this.eventos;
   }
@@ -64,7 +59,6 @@ class Database {
 
   createEvento(eventoData) {
     const nuevoEvento = {
-      idEvento: uuidv4(),
       ...eventoData,
       cuposDisponibles: eventoData.cantCupos
     };
@@ -95,7 +89,6 @@ class Database {
   }
 }
 
-// Singleton para compartir entre ambos servidores
 const database = new Database();
 
 module.exports = database;

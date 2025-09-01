@@ -1,4 +1,3 @@
-// fastify-app/routes/eventos.js
 const database = require('../../shared/database');
 const { validateEvento, validateEventoUpdate } = require('../plugins/validation');
 
@@ -7,7 +6,7 @@ async function eventosRoutes(fastify, options) {
   fastify.get('/', async (req, reply) => {
     try {
       let eventos = database.getAllEventos();
-
+      
       if (req.query.categoria) {
         eventos = eventos.filter(e => e.categoria == req.query.categoria);
       }

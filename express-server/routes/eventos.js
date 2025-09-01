@@ -3,12 +3,10 @@ const router = express.Router();
 const database = require('../../shared/database');
 const { validateEvento, validateEventoUpdate } = require('../middleware/validation');
 
-// GET /api/eventos - Obtener todos los eventos
 router.get('/', (req, res) => {
   try {
     const eventos = database.getAllEventos();
     
-    // Filtros opcionales
     let eventosFiltrados = eventos;
     
     if (req.query.categoria) {
@@ -24,7 +22,7 @@ router.get('/', (req, res) => {
     }
 
     console.log(`[EXPRESS] Obteniendo ${eventosFiltrados.length} eventos`);
-    
+
     res.json({
       success: true,
       data: eventosFiltrados,
@@ -41,7 +39,6 @@ router.get('/', (req, res) => {
   }
 });
 
-// GET /api/eventos/:id - Obtener evento específico
 router.get('/:id', (req, res) => {
   try {
     const { id } = req.params;
@@ -72,7 +69,6 @@ router.get('/:id', (req, res) => {
   }
 });
 
-// POST /api/eventos - Crear nuevo evento
 router.post('/', validateEvento, (req, res) => {
   try {
     const eventoData = req.body;
@@ -96,7 +92,6 @@ router.post('/', validateEvento, (req, res) => {
   }
 });
 
-// PUT /api/eventos/:id - Actualizar evento
 router.put('/:id', validateEventoUpdate, (req, res) => {
   try {
     const { id } = req.params;
@@ -130,7 +125,6 @@ router.put('/:id', validateEventoUpdate, (req, res) => {
   }
 });
 
-// DELETE /api/eventos/:id - Eliminar evento
 router.delete('/:id', (req, res) => {
   try {
     const { id } = req.params;

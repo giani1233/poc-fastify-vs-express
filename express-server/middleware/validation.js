@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
-// Schema para validación de eventos
 const eventoSchema = Joi.object({
+  idEvento: Joi.number().integer().positive().optional(),
   nombre: Joi.string().min(3).max(100).required(),
   descripcion: Joi.string().min(10).max(500).required(),
   precioEntrada: Joi.number().positive().required(),
